@@ -44,5 +44,9 @@ Before we proceed, an environment variable must be set for pasystack o identify 
 ```
 http://localhost:8080/swagger-ui/index.html 
 ```
+
+![paystackApi](https://user-images.githubusercontent.com/67476155/194124507-7d148fbd-c067-48ee-bdc2-93630199223f.png)
+
+
 ## Author
 Sunday Ajisegiri (ajisegiris1@gmail.com).
