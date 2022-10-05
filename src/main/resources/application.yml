@@ -1,12 +1,13 @@
 paystack:
   initializeApi: https://api.paystack.co/transaction/initialize
-  secretKey: your_api_key
+  secretKey: ${PAYSTACK_SECRET_KEY}
   verifyApi: https://api.paystack.co/transaction/verify
   transactionApi: https://api.paystack.co/transaction
   chargeApi: https://api.paystack.co/charge
   otpApi: https://api.paystack.co/charge/submit_otp
   transferApi: https://api.paystack.co/transfer
   finalizeTransferApi: https://api.paystack.co/transfer/finalize_transfer
+  customerApi: https://api.paystack.co/customer
 
 
 

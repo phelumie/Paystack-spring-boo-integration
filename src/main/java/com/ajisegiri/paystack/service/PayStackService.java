@@ -1,13 +1,12 @@
 package com.ajisegiri.paystack.service;
 
 import com.ajisegiri.paystack.dto.*;
-import com.ajisegiri.paystack.response.PaymentResponse;
-import com.ajisegiri.paystack.response.AllTransactionResponse;
-import com.ajisegiri.paystack.response.TransactionResponse;
-import com.ajisegiri.paystack.response.VerifyTransactionResponse;
+import com.ajisegiri.paystack.response.*;
 import reactor.core.publisher.Mono;
 
 public interface PayStackService {
+    Mono<CustomerResponse> createCustomer(CreateCustomerDto createCustomerDto);
+
     Mono<PaymentResponse> initializePayment(InitializePaymentDto initializePaymentDto);
 
     Mono<TransactionResponse> bankChargeApi(BankChargeApi bankChargeApi);
@@ -20,4 +19,10 @@ public interface PayStackService {
 
     Mono<VerifyTransactionResponse> verifyTransaction(String reference);
     Mono<AllTransactionResponse> getAllTransactions();
+
+    Mono<AllCustomerResponse> getAllCustomers();
+
+    Mono<TransactionResponse> getTransactionById(String id);
+
+    Mono<CustomerResponse> getCustomerById(String customerCode);
 }

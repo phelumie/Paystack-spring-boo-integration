@@ -3,10 +3,7 @@ package com.ajisegiri.paystack.service;
 import com.ajisegiri.paystack.config.PropertiesConfiguration;
 import com.ajisegiri.paystack.dto.*;
 import com.ajisegiri.paystack.exceptions.PayStackExceptions;
-import com.ajisegiri.paystack.response.PaymentResponse;
-import com.ajisegiri.paystack.response.AllTransactionResponse;
-import com.ajisegiri.paystack.response.TransactionResponse;
-import com.ajisegiri.paystack.response.VerifyTransactionResponse;
+import com.ajisegiri.paystack.response.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +20,24 @@ public class PayStackServiceImpl implements PayStackService{
     private final WebClient.Builder webClient;
     private final ObjectMapper objectMapper;
     private final PropertiesConfiguration prop;
+    @Override
+    public Mono<CustomerResponse> createCustomer(CreateCustomerDto createCustomerDto) {
+        log.debug("entering method createCustomer");
+        log.info("creating paystack customer account  for {}",createCustomerDto.toString());
+        return webClient.build().post().uri(prop.getCustomerApi())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(prop.getSecretKey()))
+                .bodyValue(createCustomerDto)
+                .retrieve()
+                .onStatus(HttpStatus::isError, clientResponse -> clientResponse
+                        .bodyToMono(String.class)
+                        .flatMap(error -> {
+                            log.error("{} resulted into error: {}",createCustomerDto.toString(),error);
+                            return Mono.error(new PayStackExceptions(error));
+                        }))
+                .bodyToMono(CustomerResponse.class);
+    }
     @Override
     public Mono<PaymentResponse> initializePayment(InitializePaymentDto initializePaymentDto) {
         log.debug("entering method initializePayment");
@@ -150,6 +165,52 @@ public class PayStackServiceImpl implements PayStackService{
                             log.error("getAllTransactions resulted into error: {}",error);
                             return Mono.error(new PayStackExceptions(error));}))
                 .bodyToMono(AllTransactionResponse.class);
+    }
+
+    @Override
+    public Mono<AllCustomerResponse> getAllCustomers() {
+        log.debug("entering method getAllCustomers");
+        return webClient.build().get().uri(prop.getCustomerApi())
+                .accept(MediaType.APPLICATION_JSON)
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(prop.getSecretKey()))
+                .retrieve()
+                .onStatus(HttpStatus::isError, clientResponse -> clientResponse
+                        .bodyToMono(String.class)
+                        .flatMap(error -> {
+                            log.error("getAllCustomers resulted into error: {}",error);
+                            return Mono.error(new PayStackExceptions(error));}))
+                .bodyToMono(AllCustomerResponse.class);
+    }
+
+    @Override
+    public Mono<TransactionResponse> getTransactionById(String id) {
+        log.debug("entering method getTransactionById");
+        String url=prop.getTransactionApi().concat("/").concat(id);
+        return webClient.build().get().uri(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(prop.getSecretKey()))
+                .retrieve()
+                .onStatus(HttpStatus::isError, clientResponse -> clientResponse
+                        .bodyToMono(String.class)
+                        .flatMap(error -> {
+                            log.error("getAllTransaction  by id {} resulted into error: {}",id,error);
+                            return Mono.error(new PayStackExceptions(error));}))
+                .bodyToMono(TransactionResponse.class);
+    }
+    @Override
+    public Mono<CustomerResponse> getCustomerById(String customerCode) {
+        log.debug("entering method getCustomerById");
+        String url=prop.getCustomerApi().concat("/").concat(customerCode);
+        return webClient.build().get().uri(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(prop.getSecretKey()))
+                .retrieve()
+                .onStatus(HttpStatus::isError, clientResponse -> clientResponse
+                        .bodyToMono(String.class)
+                        .flatMap(error -> {
+                            log.error("getCustomer by id {} resulted into error: {}",customerCode,error);
+                            return Mono.error(new PayStackExceptions(error));}))
+                .bodyToMono(CustomerResponse.class);
     }
 
 }

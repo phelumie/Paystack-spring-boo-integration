@@ -17,6 +17,7 @@ public class PropertiesConfiguration {
 	private String otpApi;
 	private String transferApi;
 	private String finalizeTransferApi;
+	private String customerApi;
 
 
 

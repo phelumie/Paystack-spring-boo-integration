@@ -34,6 +34,12 @@ public class TransactionData {
         private String email;
         private String phone;
         private String customer_code;
+        private Long integration;
+        private String domain;
+        private float id;
+        private boolean identified;
+        private String createdAt;
+        private String updatedAt;
     }
     @Data
     public static class Authorization{

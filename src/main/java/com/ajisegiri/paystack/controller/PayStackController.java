@@ -1,10 +1,7 @@
 package com.ajisegiri.paystack.controller;
 
 import com.ajisegiri.paystack.dto.*;
-import com.ajisegiri.paystack.response.PaymentResponse;
-import com.ajisegiri.paystack.response.AllTransactionResponse;
-import com.ajisegiri.paystack.response.TransactionResponse;
-import com.ajisegiri.paystack.response.VerifyTransactionResponse;
+import com.ajisegiri.paystack.response.*;
 import com.ajisegiri.paystack.service.PayStackService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +17,11 @@ import javax.validation.Valid;
 public class PayStackController {
     private final PayStackService payStackService;
 
+    @PostMapping("customer")
+    public ResponseEntity<Mono<CustomerResponse>> createCustomer(@RequestBody @Valid CreateCustomerDto customerDto){
+        var result=payStackService.createCustomer(customerDto);
+        return new ResponseEntity<>(result,HttpStatus.CREATED);
+    }
     @PostMapping("initialize")
     public ResponseEntity<Mono<PaymentResponse>> initializePayment(@RequestBody @Valid InitializePaymentDto initializePayment){
         var result=payStackService.initializePayment(initializePayment);
@@ -49,6 +51,23 @@ public class PayStackController {
     @GetMapping("verify")
     public ResponseEntity<Mono<VerifyTransactionResponse>> verifyTransaction(@RequestParam("reference") String reference){
         var result=payStackService.verifyTransaction(reference);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @GetMapping("customer")
+    public ResponseEntity<Mono<CustomerResponse>> getCustomer(@RequestParam("customer-code") String id){
+        var result=payStackService.getCustomerById(id);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+    @GetMapping("transaction")
+    public ResponseEntity<Mono<TransactionResponse>> getTransaction(@RequestParam("transaction-id") String id){
+        var result=payStackService.getTransactionById(id);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @GetMapping("customers")
+    public ResponseEntity<Mono<AllCustomerResponse>> getAllCustomers(){
+        var result=payStackService.getAllCustomers();
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
