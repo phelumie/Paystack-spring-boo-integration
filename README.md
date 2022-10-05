@@ -37,7 +37,7 @@ Before we proceed, an environment variable must be set for pasystack o identify 
 * POST ``` /api/paystack/events -H 'x-paystack-signature: HEADER ```
 
 ```
-        HEADER (REQUIRE): The header of the event. If not present unauthorized exception is thrown. If header is not equals to hash genereated an unauhorized exception is also thrown. 
+        HEADER (REQUIRE): The header of the event. If not present unauthorized exception is thrown. If header is not equals to hash genereated, an unauhorized exception is also thrown. 
 ```
 
 ## Swagger OpenApi url
